@@ -13,12 +13,17 @@ class LLMProvider(LLMProviderBase):
             self.base_url = config.get("url")
         check_model_key("LLM", self.api_key)
         self.client = openai.OpenAI(api_key=self.api_key, base_url=self.base_url)
+        self.temperature = config.get("temperature", 0.7)
+        self.max_tokens = config.get("max_tokens", 1024)
+
 
     def response(self, session_id, dialogue):
         try:
             responses = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=dialogue,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
                 stream=True
             )
             
